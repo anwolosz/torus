@@ -41,24 +41,29 @@ class Torus {
 
     private normalizeCoordinates(coordinates: number[]) {
         for (let i = 0; i < this._dimension; i++) {
-            coordinates[i] = ((coordinates[i] % this._dimensions[i]) + this._dimensions[i]) % this._dimensions[i];
+            coordinates[i] = this.normalizeValue(coordinates[i], this._dimensions[i])
         }
         return coordinates
     }
 
-    private checkNumberOfCoordinates(coordinates: number[]) {
+    private normalizeValue(value: number, modulo: number) {
+        value = ((value % modulo) + modulo) % modulo;
+        return value
+    }
+
+    private validateNumberOfCoordinates(coordinates: number[]) {
         if (coordinates.length !== this._dimension) {
             throw TypeError(`${this._dimension} arguments required (dimension of torus), but ${coordinates.length} passed`);
         }
     }
 
     at(...coordinates: number[]) {
-        this.checkNumberOfCoordinates(coordinates)
+        this.validateNumberOfCoordinates(coordinates)
         return this.torus[this.coordinatesToIndex(coordinates)]
     }
 
     set(value: any, ...coordinates: number[]) {
-        this.checkNumberOfCoordinates(coordinates)
+        this.validateNumberOfCoordinates(coordinates)
         this.torus[this.coordinatesToIndex(coordinates)] = value
     }
 
@@ -74,7 +79,15 @@ class Torus {
         return this.indexToCoordinates(findIndexResult)
     }
 
-    expand(indexOfDimension: number) {
+    private validateExpandArguments(indexOfDimension: number) {
+        if (indexOfDimension >= this.dimension || indexOfDimension < 0) {
+            throw RangeError(`Index of dimension must be in range: [0 .. ${this._dimension - 1}] (dimension indexes of torus)`);
+        }
+    }
+
+    expand(indexOfDimension: number, position: number, fillValue: any = undefined) {
+        this.validateExpandArguments(indexOfDimension)
+        const normalizedPosition = this.normalizeValue(position, this._dimensions[indexOfDimension])
         let dimensionsProduct = 1
         for (let j = indexOfDimension; j < this._dimension; j++) {
             dimensionsProduct *= this.dimensions[j]
@@ -85,10 +98,11 @@ class Torus {
             lowerDimensionsProduct *= this.dimensions[j]
         }
 
-        for (let i = this.torus.length; i > 0; i -= dimensionsProduct) {
+        for (let i = 0; i < this.torus.length; i += dimensionsProduct) {
             for (let j = 0; j < lowerDimensionsProduct; j++) {
-                this.torus.splice(i, 0, undefined);
+                this.torus.splice(i + (normalizedPosition * lowerDimensionsProduct), 0, fillValue);
             }
+            i += lowerDimensionsProduct
         }
 
         this._dimensions[indexOfDimension]++
