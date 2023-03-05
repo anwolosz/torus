@@ -66,6 +66,34 @@ class Torus {
         return this.buildArray(this.torus, this.dimensions[0], this._dimensions.slice(1))
     }
 
+    findCoordinates(predicate: (value: any, index: number, obj: any[]) => unknown, thisArg?: any) {
+        const findIndexResult = this.torus.findIndex(predicate)
+        if (findIndexResult === -1) {
+            return -1
+        }
+        return this.indexToCoordinates(findIndexResult)
+    }
+
+    expand(indexOfDimension: number) {
+        let dimensionsProduct = 1
+        for (let j = indexOfDimension; j < this._dimension; j++) {
+            dimensionsProduct *= this.dimensions[j]
+        }
+
+        let lowerDimensionsProduct = 1
+        for (let j = 1 + indexOfDimension; j < this._dimension; j++) {
+            lowerDimensionsProduct *= this.dimensions[j]
+        }
+
+        for (let i = this.torus.length; i > 0; i -= dimensionsProduct) {
+            for (let j = 0; j < lowerDimensionsProduct; j++) {
+                this.torus.splice(i, 0, undefined);
+            }
+        }
+
+        this._dimensions[indexOfDimension]++
+    }
+
     private buildArray(values: any[], dimension: number, dimensions: number[]) {
         let currentArray = new Array(dimension)
         for (let i = 0; i < dimension; i++) {
