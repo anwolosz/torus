@@ -1,8 +1,24 @@
 {
-  "devDependencies": {
-    "vitest": "^0.29.2"
-  },
+  "name": "n-torus",
+  "version": "1.0.0",
+  "description": "n-dimensional torus data structure.",
+  "main": "./torus.js",
+  "types": "./torus.d.ts",
   "scripts": {
-    "test": "vitest"
-  }
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anwolosz/torus.git"
+  },
+  "keywords": [
+    "torus",
+    "datastructure"
+  ],
+  "author": "András Wolosz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anwolosz/torus/issues"
+  },
+  "homepage": "https://github.com/anwolosz/torus#readme"
 }
