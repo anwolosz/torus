@@ -18,12 +18,50 @@ export class Torus {
         this.torus = new Array(firstDimension * otherDimensionsProduct)
     }
 
+    public get dimension() {
+        return this._dimension
+    }
+
+    public get dimensions() {
+        return this._dimensions
+    }
+
     private validateDimensions(...dimensions: number[]) {
         for (let i = 0; i < dimensions.length; i++) {
             if (dimensions[i] <= 0) {
                 throw TypeError(`Arguments must be larger than 0`);
             }
         }
+    }
+
+    private validateNumberOfCoordinates(coordinates: number[]) {
+        if (coordinates.length !== this._dimension) {
+            throw TypeError(`${this._dimension} arguments required (dimension of torus), but ${coordinates.length} passed`);
+        }
+    }
+
+    private validateDimensionIndex(indexOfDimension: number) {
+        if (indexOfDimension >= this.dimension || indexOfDimension < 0) {
+            throw RangeError(`Index of dimension must be in range: [0 .. ${this._dimension - 1}] (dimension indexes of torus)`);
+        }
+    }
+
+    private validateDimensionSize(size: number) {
+        if (size <= 1) {
+            throw RangeError(`Dimension size must be larger than 1`);
+        }
+    }
+
+    private normalizeValue(value: number, modulo: number) {
+        value = ((value % modulo) + modulo) % modulo;
+        return value
+    }
+
+    private normalizeCoordinates(coordinates: number[]) {
+        for (let i = 0; i < this._dimension; i++) {
+            coordinates[i] = this.normalizeValue(coordinates[i], this._dimensions[i])
+        }
+        return coordinates
     }
 
     private coordinatesToIndex(coordinates: number[]) {
@@ -39,22 +77,36 @@ export class Torus {
         return index
     }
 
-    normalizeCoordinates(coordinates: number[]) {
+    private buildArray(values: any[], dimension: number, dimensions: number[]) {
+        let currentArray = new Array(dimension)
+        for (let i = 0; i < dimension; i++) {
+            if (dimensions.length == 0) {
+                currentArray[i] = values[i]
+            }
+            else {
+                const subValuesLength = values.length / dimension
+                currentArray[i] = this.buildArray(
+                    values.slice(i * subValuesLength, (i + 1) * subValuesLength),
+                    dimensions[0],
+                    dimensions.slice(1)
+                )
+            }
+        }
+        return currentArray
+    }
+
+    private indexToCoordinates(index: number) {
+        let coordinates: number[] = []
         for (let i = 0; i < this._dimension; i++) {
-            coordinates[i] = this.normalizeValue(coordinates[i], this._dimensions[i])
+            let dimensionsProduct = 1
+            for (let j = 1 + i; j < this._dimension; j++) {
+                dimensionsProduct *= this._dimensions[j]
+            }
+            const quotient = Math.floor(index / dimensionsProduct)
+            coordinates.push(quotient)
+            index -= quotient * dimensionsProduct
         }
         return coordinates
-    }
-
-    private normalizeValue(value: number, modulo: number) {
-        value = ((value % modulo) + modulo) % modulo;
-        return value
-    }
-
-    private validateNumberOfCoordinates(coordinates: number[]) {
-        if (coordinates.length !== this._dimension) {
-            throw TypeError(`${this._dimension} arguments required (dimension of torus), but ${coordinates.length} passed`);
-        }
     }
 
     at(...coordinates: number[]) {
@@ -79,22 +131,6 @@ export class Torus {
         return this.indexToCoordinates(findIndexResult)
     }
 
-    private validateDimensionIndex(indexOfDimension: number) {
-        if (indexOfDimension >= this.dimension || indexOfDimension < 0) {
-            throw RangeError(`Index of dimension must be in range: [0 .. ${this._dimension - 1}] (dimension indexes of torus)`);
-        }
-    }
-
-    private validateDimensionSize(size: number) {
-        if (size <= 1) {
-            throw RangeError(`Dimension size must be larger than 1`);
-        }
-    }
-
-    //TODO: isEqual
-    //TODO: shrink
-    //TODO: project
-    //TODO: extend
     shrink(indexOfDimension: number, position: number) {
         this.validateDimensionIndex(indexOfDimension)
         this.validateDimensionSize(this._dimensions[indexOfDimension])
@@ -138,45 +174,5 @@ export class Torus {
         }
 
         this._dimensions[indexOfDimension]++
-    }
-
-    private buildArray(values: any[], dimension: number, dimensions: number[]) {
-        let currentArray = new Array(dimension)
-        for (let i = 0; i < dimension; i++) {
-            if (dimensions.length == 0) {
-                currentArray[i] = values[i]
-            }
-            else {
-                const subValuesLength = values.length / dimension
-                currentArray[i] = this.buildArray(
-                    values.slice(i * subValuesLength, (i + 1) * subValuesLength),
-                    dimensions[0],
-                    dimensions.slice(1)
-                )
-            }
-        }
-        return currentArray
-    }
-
-    private indexToCoordinates(index: number) {
-        let coordinates: number[] = []
-        for (let i = 0; i < this._dimension; i++) {
-            let dimensionsProduct = 1
-            for (let j = 1 + i; j < this._dimension; j++) {
-                dimensionsProduct *= this._dimensions[j]
-            }
-            const quotient = Math.floor(index / dimensionsProduct)
-            coordinates.push(quotient)
-            index -= quotient * dimensionsProduct
-        }
-        return coordinates
-    }
-
-    public get dimension() {
-        return this._dimension
-    }
-
-    public get dimensions() {
-        return this._dimensions
     }
 }
