@@ -1323,3 +1323,507 @@ describe("#expand(...)", () => {
         })
     })
 })
+
+describe("#shrink(...)", () => {
+    describe("#1D", () => {
+        describe("#Product: 1", () => {
+            let testTorus1 = new Torus(1)
+            it.fails("validate dimension index argument", () => {
+                testTorus1.shrink(1, 0)
+            })
+            it.fails("validate dimension size argument", () => {
+                testTorus1.shrink(0, 0)
+            })
+        })
+
+        describe("#Product: 3", () => {
+            let testTorus1 = new Torus(3)
+            testTorus1.set("A", 0)
+            testTorus1.set("B", 1)
+            testTorus1.set("C", 2)
+            testTorus1.shrink(0, 0)
+            it("shrink on position: 0", () => {
+                expect(testTorus1.toArray()).toEqual(["B", "C"])
+            })
+
+            let testTorus2 = new Torus(3)
+            testTorus2.set("A", 0)
+            testTorus2.set("B", 1)
+            testTorus2.set("C", 2)
+            testTorus2.shrink(0, 1)
+            it("shrink on position: 1", () => {
+                expect(testTorus2.toArray()).toEqual(["A", "C"])
+            })
+
+            let testTorus3 = new Torus(3)
+            testTorus3.set("A", 0)
+            testTorus3.set("B", 1)
+            testTorus3.set("C", 2)
+            testTorus3.shrink(0, 2)
+            it("shrink on position: 2", () => {
+                expect(testTorus3.toArray()).toEqual(["A", "B"])
+            })
+
+            let testTorus4 = new Torus(3)
+            testTorus4.set("A", 0)
+            testTorus4.set("B", 1)
+            testTorus4.set("C", 2)
+            testTorus4.shrink(0, 3)
+            it("shrink on position: 3", () => {
+                expect(testTorus4.toArray()).toEqual(["B", "C"])
+            })
+
+            let testTorus5 = new Torus(3)
+            testTorus5.set("A", 0)
+            testTorus5.set("B", 1)
+            testTorus5.set("C", 2)
+            testTorus5.shrink(0, -1)
+            it("shrink on position: -1", () => {
+                expect(testTorus5.toArray()).toEqual(["A", "B"])
+            })
+        })
+    })
+
+    describe("#2D", () => {
+        describe("#Product: 1x3", () => {
+            let testTorus1 = new Torus(1, 3)
+            testTorus1.set("A", 0, 0)
+            testTorus1.set("B", 0, 1)
+            testTorus1.set("C", 0, 2)
+            it.fails("validate dimension index argument", () => {
+                testTorus1.shrink(0, 0)
+            })
+
+            let testTorus2 = new Torus(1, 3)
+            testTorus2.set("A", 0, 0)
+            testTorus2.set("B", 0, 1)
+            testTorus2.set("C", 0, 2)
+            it.fails("validate dimension index argument", () => {
+                testTorus2.shrink(0, 42)
+            })
+
+            let testTorus3 = new Torus(1, 3)
+            testTorus3.set("A", 0, 0)
+            testTorus3.set("B", 0, 1)
+            testTorus3.set("C", 0, 2)
+            testTorus3.shrink(1, 0)
+            it("shrink on position: 0, and in dimension index: 1", () => {
+                expect(testTorus3.toArray()).toEqual([["B", "C"]])
+            })
+
+            let testTorus4 = new Torus(1, 3)
+            testTorus4.set("A", 0, 0)
+            testTorus4.set("B", 0, 1)
+            testTorus4.set("C", 0, 2)
+            testTorus4.shrink(1, 1)
+            it("shrink on position: 1, and in dimension index: 1", () => {
+                expect(testTorus4.toArray()).toEqual([["A", "C"]])
+            })
+
+            let testTorus5 = new Torus(1, 3)
+            testTorus5.set("A", 0, 0)
+            testTorus5.set("B", 0, 1)
+            testTorus5.set("C", 0, 2)
+            testTorus5.shrink(1, 2)
+            it("shrink on position: 2, and in dimension index: 1", () => {
+                expect(testTorus5.toArray()).toEqual([["A", "B"]])
+            })
+
+            let testTorus6 = new Torus(1, 3)
+            testTorus6.set("A", 0, 0)
+            testTorus6.set("B", 0, 1)
+            testTorus6.set("C", 0, 2)
+            testTorus6.shrink(1, 3)
+            it("shrink on position: 3, and in dimension index: 1", () => {
+                expect(testTorus6.toArray()).toEqual([["B", "C"]])
+            })
+
+            let testTorus7 = new Torus(1, 3)
+            testTorus7.set("A", 0, 0)
+            testTorus7.set("B", 0, 1)
+            testTorus7.set("C", 0, 2)
+            testTorus7.shrink(1, -2)
+            it("shrink on position: -2, and in dimension index: 1", () => {
+                expect(testTorus7.toArray()).toEqual([["A", "C"]])
+            })
+        })
+
+        describe("#Product: 3x1", () => {
+            let testTorus1 = new Torus(3, 1)
+            testTorus1.set("A", 0, 0)
+            testTorus1.set("B", 1, 0)
+            testTorus1.set("C", 2, 0)
+            testTorus1.shrink(0, 0)
+            it("shrink on position: 0, and in dimension index: 0", () => {
+                expect(testTorus1.toArray()).toEqual([["B"], ["C"]])
+            })
+
+            let testTorus2 = new Torus(3, 1)
+            testTorus2.set("A", 0, 0)
+            testTorus2.set("B", 1, 0)
+            testTorus2.set("C", 2, 0)
+            testTorus2.shrink(0, 1)
+            it("shrink on position: 1, and in dimension index: 0", () => {
+                expect(testTorus2.toArray()).toEqual([["A"], ["C"]])
+            })
+
+            let testTorus3 = new Torus(3, 1)
+            testTorus3.set("A", 0, 0)
+            testTorus3.set("B", 1, 0)
+            testTorus3.set("C", 2, 0)
+            testTorus3.shrink(0, 2)
+            it("shrink on position: 2, and in dimension index: 0", () => {
+                expect(testTorus3.toArray()).toEqual([["A"], ["B"]])
+            })
+
+            let testTorus4 = new Torus(3, 1)
+            testTorus4.set("A", 0, 0)
+            testTorus4.set("B", 1, 0)
+            testTorus4.set("C", 2, 0)
+            testTorus4.shrink(0, 3)
+            it("shrink on position: 3, and in dimension index: 0", () => {
+                expect(testTorus4.toArray()).toEqual([["B"], ["C"]])
+            })
+
+            let testTorus5 = new Torus(3, 1)
+            testTorus5.set("A", 0, 0)
+            testTorus5.set("B", 1, 0)
+            testTorus5.set("C", 2, 0)
+            testTorus5.shrink(0, -1)
+            it("shrink on position: -1, and in dimension index: 0", () => {
+                expect(testTorus5.toArray()).toEqual([["A"], ["B"]])
+            })
+
+            let testTorus6 = new Torus(3, 1)
+            testTorus6.set("A", 0, 0)
+            testTorus6.set("B", 1, 0)
+            testTorus6.set("C", 2, 0)
+            it.fails("validate dimension index argument", () => {
+                testTorus6.shrink(1, 0)
+            })
+
+            let testTorus7 = new Torus(3, 1)
+            testTorus7.set("A", 0, 0)
+            testTorus7.set("B", 1, 0)
+            testTorus7.set("C", 2, 0)
+            it.fails("validate dimension index argument", () => {
+                testTorus7.shrink(1, 42)
+            })
+        })
+
+        describe("#Product: 2x3", () => {
+            let testTorus1 = new Torus(2, 3)
+            testTorus1.set("A", 0, 0)
+            testTorus1.set("B", 0, 1)
+            testTorus1.set("C", 0, 2)
+            testTorus1.set("D", 1, 0)
+            testTorus1.set("E", 1, 1)
+            testTorus1.set("F", 1, 2)
+            testTorus1.shrink(0, 0)
+            it("shrink on position: 0, and in dimension index: 0", () => {
+                expect(testTorus1.toArray()).toEqual(
+                    [
+                        ["D", "E", "F"]
+                    ]
+                )
+            })
+
+            let testTorus2 = new Torus(2, 3)
+            testTorus2.set("A", 0, 0)
+            testTorus2.set("B", 0, 1)
+            testTorus2.set("C", 0, 2)
+            testTorus2.set("D", 1, 0)
+            testTorus2.set("E", 1, 1)
+            testTorus2.set("F", 1, 2)
+            testTorus2.shrink(0, 1)
+            it("shrink on position: 1, and in dimension index: 0", () => {
+                expect(testTorus2.toArray()).toEqual(
+                    [
+                        ["A", "B", "C"]
+                    ]
+                )
+            })
+
+            let testTorus3 = new Torus(2, 3)
+            testTorus3.set("A", 0, 0)
+            testTorus3.set("B", 0, 1)
+            testTorus3.set("C", 0, 2)
+            testTorus3.set("D", 1, 0)
+            testTorus3.set("E", 1, 1)
+            testTorus3.set("F", 1, 2)
+            testTorus3.shrink(0, 2)
+            it("shrink on position: 2, and in dimension index: 0", () => {
+                expect(testTorus3.toArray()).toEqual(
+                    [
+                        ["D", "E", "F"]
+                    ]
+                )
+            })
+
+            let testTorus4 = new Torus(2, 3)
+            testTorus4.set("A", 0, 0)
+            testTorus4.set("B", 0, 1)
+            testTorus4.set("C", 0, 2)
+            testTorus4.set("D", 1, 0)
+            testTorus4.set("E", 1, 1)
+            testTorus4.set("F", 1, 2)
+            testTorus4.shrink(0, -1)
+            it("shrink on position: -1, and in dimension index: 0", () => {
+                expect(testTorus4.toArray()).toEqual(
+                    [
+                        ["A", "B", "C"]
+                    ]
+                )
+            })
+
+            let testTorus5 = new Torus(2, 3)
+            testTorus5.set("A", 0, 0)
+            testTorus5.set("B", 0, 1)
+            testTorus5.set("C", 0, 2)
+            testTorus5.set("D", 1, 0)
+            testTorus5.set("E", 1, 1)
+            testTorus5.set("F", 1, 2)
+            testTorus5.shrink(1, 0)
+            it("shrink on position: 0, and in dimension index: 1", () => {
+                expect(testTorus5.toArray()).toEqual(
+                    [
+                        ["B", "C"], ["E", "F"]
+                    ]
+                )
+            })
+
+            let testTorus6 = new Torus(2, 3)
+            testTorus6.set("A", 0, 0)
+            testTorus6.set("B", 0, 1)
+            testTorus6.set("C", 0, 2)
+            testTorus6.set("D", 1, 0)
+            testTorus6.set("E", 1, 1)
+            testTorus6.set("F", 1, 2)
+            testTorus6.shrink(1, 1)
+            it("shrink on position: 1, and in dimension index: 1", () => {
+                expect(testTorus6.toArray()).toEqual(
+                    [
+                        ["A", "C"], ["D", "F"]
+                    ]
+                )
+            })
+
+            let testTorus7 = new Torus(2, 3)
+            testTorus7.set("A", 0, 0)
+            testTorus7.set("B", 0, 1)
+            testTorus7.set("C", 0, 2)
+            testTorus7.set("D", 1, 0)
+            testTorus7.set("E", 1, 1)
+            testTorus7.set("F", 1, 2)
+            testTorus7.shrink(1, 2)
+            it("shrink on position: 2, and in dimension index: 1", () => {
+                expect(testTorus7.toArray()).toEqual(
+                    [
+                        ["A", "B"], ["D", "E"]
+                    ]
+                )
+            })
+
+            let testTorus8 = new Torus(2, 3)
+            testTorus8.set("A", 0, 0)
+            testTorus8.set("B", 0, 1)
+            testTorus8.set("C", 0, 2)
+            testTorus8.set("D", 1, 0)
+            testTorus8.set("E", 1, 1)
+            testTorus8.set("F", 1, 2)
+            testTorus8.shrink(1, 3)
+            it("shrink on position: 3, and in dimension index: 1", () => {
+                expect(testTorus8.toArray()).toEqual(
+                    [
+                        ["B", "C"], ["E", "F"]
+                    ]
+                )
+            })
+
+            let testTorus9 = new Torus(2, 3)
+            testTorus9.set("A", 0, 0)
+            testTorus9.set("B", 0, 1)
+            testTorus9.set("C", 0, 2)
+            testTorus9.set("D", 1, 0)
+            testTorus9.set("E", 1, 1)
+            testTorus9.set("F", 1, 2)
+            testTorus9.shrink(1, -1)
+            it("shrink on position: -1, and in dimension index: 1", () => {
+                expect(testTorus9.toArray()).toEqual(
+                    [
+                        ["A", "B"], ["D", "E"]
+                    ]
+                )
+            })
+
+        })
+
+    })
+
+    describe("#3D", () => {
+        describe("#Product: 2x2x3", () => {
+            let testTorus1 = new Torus(2, 2, 3)
+            testTorus1.set("A", 0, 0, 0)
+            testTorus1.set("B", 0, 0, 1)
+            testTorus1.set("C", 0, 0, 2)
+            testTorus1.set("D", 0, 1, 0)
+            testTorus1.set("E", 0, 1, 1)
+            testTorus1.set("F", 0, 1, 2)
+            testTorus1.set("G", 1, 0, 0)
+            testTorus1.set("H", 1, 0, 1)
+            testTorus1.set("I", 1, 0, 2)
+            testTorus1.set("J", 1, 1, 0)
+            testTorus1.set("K", 1, 1, 1)
+            testTorus1.set("L", 1, 1, 2)
+            testTorus1.shrink(0, 0)
+            it("shrink on position: 0, and in dimension index: 0", () => {
+                expect(testTorus1.toArray()).toEqual(
+                    [
+                        [
+                            ["G", "H", "I"],
+                            ["J", "K", "L"]
+                        ]
+                    ]
+                )
+            })
+
+            let testTorus2 = new Torus(2, 2, 3)
+            testTorus2.set("A", 0, 0, 0)
+            testTorus2.set("B", 0, 0, 1)
+            testTorus2.set("C", 0, 0, 2)
+            testTorus2.set("D", 0, 1, 0)
+            testTorus2.set("E", 0, 1, 1)
+            testTorus2.set("F", 0, 1, 2)
+            testTorus2.set("G", 1, 0, 0)
+            testTorus2.set("H", 1, 0, 1)
+            testTorus2.set("I", 1, 0, 2)
+            testTorus2.set("J", 1, 1, 0)
+            testTorus2.set("K", 1, 1, 1)
+            testTorus2.set("L", 1, 1, 2)
+            testTorus2.shrink(0, 31)
+            it("shrink on position: 31, and in dimension index: 0", () => {
+                expect(testTorus2.toArray()).toEqual(
+                    [
+                        [
+                            ["A", "B", "C"],
+                            ["D", "E", "F"]
+                        ]
+                    ]
+                )
+            })
+
+            let testTorus3 = new Torus(2, 2, 3)
+            testTorus3.set("A", 0, 0, 0)
+            testTorus3.set("B", 0, 0, 1)
+            testTorus3.set("C", 0, 0, 2)
+            testTorus3.set("D", 0, 1, 0)
+            testTorus3.set("E", 0, 1, 1)
+            testTorus3.set("F", 0, 1, 2)
+            testTorus3.set("G", 1, 0, 0)
+            testTorus3.set("H", 1, 0, 1)
+            testTorus3.set("I", 1, 0, 2)
+            testTorus3.set("J", 1, 1, 0)
+            testTorus3.set("K", 1, 1, 1)
+            testTorus3.set("L", 1, 1, 2)
+            testTorus3.shrink(1, -2)
+            it("shrink on position: -2, and in dimension index: 1", () => {
+                expect(testTorus3.toArray()).toEqual(
+                    [
+                        [
+                            ["D", "E", "F"],
+                        ],
+                        [
+                            ["J", "K", "L"],
+                        ]
+                    ]
+                )
+            })
+
+            let testTorus4 = new Torus(2, 2, 3)
+            testTorus4.set("A", 0, 0, 0)
+            testTorus4.set("B", 0, 0, 1)
+            testTorus4.set("C", 0, 0, 2)
+            testTorus4.set("D", 0, 1, 0)
+            testTorus4.set("E", 0, 1, 1)
+            testTorus4.set("F", 0, 1, 2)
+            testTorus4.set("G", 1, 0, 0)
+            testTorus4.set("H", 1, 0, 1)
+            testTorus4.set("I", 1, 0, 2)
+            testTorus4.set("J", 1, 1, 0)
+            testTorus4.set("K", 1, 1, 1)
+            testTorus4.set("L", 1, 1, 2)
+            testTorus4.shrink(1, -17)
+            it("shrink on position: -17, and in dimension index: 1", () => {
+                expect(testTorus4.toArray()).toEqual(
+                    [
+                        [
+                            ["A", "B", "C"]
+                        ],
+                        [
+                            ["G", "H", "I"]
+                        ]
+                    ]
+                )
+            })
+
+
+            let testTorus5 = new Torus(2, 2, 3)
+            testTorus5.set("A", 0, 0, 0)
+            testTorus5.set("B", 0, 0, 1)
+            testTorus5.set("C", 0, 0, 2)
+            testTorus5.set("D", 0, 1, 0)
+            testTorus5.set("E", 0, 1, 1)
+            testTorus5.set("F", 0, 1, 2)
+            testTorus5.set("G", 1, 0, 0)
+            testTorus5.set("H", 1, 0, 1)
+            testTorus5.set("I", 1, 0, 2)
+            testTorus5.set("J", 1, 1, 0)
+            testTorus5.set("K", 1, 1, 1)
+            testTorus5.set("L", 1, 1, 2)
+            testTorus5.shrink(2, 100)
+            it("shrink on position: 100, and in dimension index: 2", () => {
+                expect(testTorus5.toArray()).toEqual(
+                    [
+                        [
+                            ["A", "C"],
+                            ["D", "F"],
+                        ],
+                        [
+                            ["G", "I"],
+                            ["J", "L"],
+                        ]
+                    ]
+                )
+            })
+
+            let testTorus6 = new Torus(2, 2, 3)
+            testTorus6.set("A", 0, 0, 0)
+            testTorus6.set("B", 0, 0, 1)
+            testTorus6.set("C", 0, 0, 2)
+            testTorus6.set("D", 0, 1, 0)
+            testTorus6.set("E", 0, 1, 1)
+            testTorus6.set("F", 0, 1, 2)
+            testTorus6.set("G", 1, 0, 0)
+            testTorus6.set("H", 1, 0, 1)
+            testTorus6.set("I", 1, 0, 2)
+            testTorus6.set("J", 1, 1, 0)
+            testTorus6.set("K", 1, 1, 1)
+            testTorus6.set("L", 1, 1, 2)
+            testTorus6.shrink(2, -4)
+            it("shrink on position: -4, and in dimension index: 2", () => {
+                expect(testTorus6.toArray()).toEqual(
+                    [
+                        [
+                            ["A", "B"],
+                            ["D", "E"],
+                        ],
+                        [
+                            ["G", "H"],
+                            ["J", "K"],
+                        ]
+                    ]
+                )
+            })
+        })
+    })
+})

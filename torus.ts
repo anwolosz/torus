@@ -1,4 +1,4 @@
-class Torus {
+export class Torus {
     private torus: any[]
     private _dimension: number
     private _dimensions: number[]
@@ -39,7 +39,7 @@ class Torus {
         return index
     }
 
-    private normalizeCoordinates(coordinates: number[]) {
+    normalizeCoordinates(coordinates: number[]) {
         for (let i = 0; i < this._dimension; i++) {
             coordinates[i] = this.normalizeValue(coordinates[i], this._dimensions[i])
         }
@@ -79,14 +79,25 @@ class Torus {
         return this.indexToCoordinates(findIndexResult)
     }
 
-    private validateExpandArguments(indexOfDimension: number) {
+    private validateDimensionIndex(indexOfDimension: number) {
         if (indexOfDimension >= this.dimension || indexOfDimension < 0) {
             throw RangeError(`Index of dimension must be in range: [0 .. ${this._dimension - 1}] (dimension indexes of torus)`);
         }
     }
 
-    expand(indexOfDimension: number, position: number, fillValue: any = undefined) {
-        this.validateExpandArguments(indexOfDimension)
+    private validateDimensionSize(size: number) {
+        if (size <= 1) {
+            throw RangeError(`Dimension size must be larger than 1`);
+        }
+    }
+
+    //TODO: isEqual
+    //TODO: shrink
+    //TODO: project
+    //TODO: extend
+    shrink(indexOfDimension: number, position: number) {
+        this.validateDimensionIndex(indexOfDimension)
+        this.validateDimensionSize(this._dimensions[indexOfDimension])
         const normalizedPosition = this.normalizeValue(position, this._dimensions[indexOfDimension])
         let dimensionsProduct = 1
         for (let j = indexOfDimension; j < this._dimension; j++) {
@@ -98,11 +109,32 @@ class Torus {
             lowerDimensionsProduct *= this.dimensions[j]
         }
 
-        for (let i = 0; i < this.torus.length; i += dimensionsProduct) {
-            for (let j = 0; j < lowerDimensionsProduct; j++) {
-                this.torus.splice(i + (normalizedPosition * lowerDimensionsProduct), 0, fillValue);
-            }
-            i += lowerDimensionsProduct
+        let i = normalizedPosition * lowerDimensionsProduct;
+        while (i < this.torus.length) {
+            this.torus.splice(i, lowerDimensionsProduct);
+            i += dimensionsProduct - lowerDimensionsProduct
+        }
+
+        this._dimensions[indexOfDimension]--
+    }
+
+    expand(indexOfDimension: number, position: number, fillValue: any = undefined) {
+        this.validateDimensionIndex(indexOfDimension)
+        const normalizedPosition = this.normalizeValue(position, this._dimensions[indexOfDimension])
+        let dimensionsProduct = 1
+        for (let j = indexOfDimension; j < this._dimension; j++) {
+            dimensionsProduct *= this.dimensions[j]
+        }
+
+        let lowerDimensionsProduct = 1
+        for (let j = 1 + indexOfDimension; j < this._dimension; j++) {
+            lowerDimensionsProduct *= this.dimensions[j]
+        }
+
+        let i = normalizedPosition * lowerDimensionsProduct
+        while (i < this.torus.length) {
+            this.torus.splice(i, 0, ...new Array(lowerDimensionsProduct).fill(fillValue));
+            i += dimensionsProduct + lowerDimensionsProduct
         }
 
         this._dimensions[indexOfDimension]++
