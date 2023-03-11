@@ -18,7 +18,7 @@ $ npm i n-torus
 import { Torus } from "n-torus"
 
 // Create a new Torus
-let myTorus = new Torus(2, 3, 4)
+const myTorus = new Torus(2, 3, 4)
 
 // Iterate over every element of myTorus
 for (let z = 0; z < myTorus.dimensions[0]; ++z) {
@@ -58,14 +58,14 @@ After construction every element of the Torus is undefined.
 ### `.dimension`
 Returns the dimension of the Torus.
 ```typescript
-let myTorus = new Torus(2, 3, 4)
+const myTorus = new Torus(2, 3, 4)
 myTorus.dimension // 3
 ```
 
 ### `.dimensions`
 Returns the shape of the Torus as an array.
 ```typescript
-let myTorus = new Torus(2, 3, 4)
+const myTorus = new Torus(2, 3, 4)
 myTorus.dimensions // [2, 3, 4]
 ```
 
@@ -77,7 +77,7 @@ The number of arguments must be equal to the dimension of the space. Otherwise `
 
 Any integer is a valid coordinate because of circular indexing.
 ``` typescript
-let myTorus = new Torus(2, 3, 4)
+const myTorus = new Torus(2, 3, 4)
 myTorus.at(0, 0) // TypeError ❌
 myTorus.at(0, 0, 0) // undefined ✅
 ```
@@ -92,7 +92,7 @@ The number of the coordinate arguments must be equal to the dimension of the Tor
 
 Any integer is a valid coordinate because of circular indexing.
 ```typescript
-let myTorus = new Torus(2, 3, 4)
+const myTorus = new Torus(2, 3, 4)
 myTorus.set("A", 0, 0) // TypeError ❌
 myTorus.set("A", 0, 0, 0) // ✅
 ```
@@ -100,7 +100,7 @@ myTorus.set("A", 0, 0, 0) // ✅
 ### `.toArray()`
 Returns the nested array form of the Torus.
 ```typescript
-let myTorus = new Torus(3, 2)
+const myTorus = new Torus(3, 2)
 myTorus.toArray()
 // [
 //   [ undefined, undefined ],
@@ -124,7 +124,7 @@ Any integer is a valid position for expansion because of circular indexing.
 Third argument is the filling value of the expanded elements. By default it is undefined.
 
 ```typescript
-let myTorus = new Torus(5, 3)
+const myTorus = new Torus(5, 3)
 myTorus.expand(2, 2, "!") // RangeError ❌
 myTorus.expand(1, 2, "!") // ✅
 myTorus.toArray()
@@ -151,8 +151,14 @@ Second argument is the index of the position of shrinking.
 
 Any integer is a valid position for shrinking because of circular indexing.
 
+
 ```typescript
-let myTorus = new Torus(3, 2)
+const myTorus = new Torus(3, 1)
+myTorus.shrink(1, 0) // TypeError ❌
+```
+
+```typescript
+const myTorus = new Torus(3, 2)
 myTorus.set("A", 0, 0)
 myTorus.set("B", 0, 1)
 myTorus.set("C", 1, 0)
@@ -160,15 +166,10 @@ myTorus.set("D", 1, 1)
 myTorus.set("E", 2, 0)
 myTorus.set("F", 2, 1)
 myTorus.shrink(2, 1) // RangeError ❌
-myTorus.shrink(0, 1)
+myTorus.shrink(0, 1) // ✅
 myTorus.toArray()
 // [
 //     [ 'A', 'B' ],
 //     [ 'E', 'F' ]
 // ]
-```
-
-```typescript
-let myTorus = new Torus(3, 1)
-myTorus.shrink(1, 0) // TypeError ❌
 ```

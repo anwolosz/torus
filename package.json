@@ -2,10 +2,10 @@
   "name": "n-torus",
   "version": "1.0.0",
   "description": "n-dimensional torus data structure.",
-  "main": "./torus.js",
-  "types": "./torus.d.ts",
+  "main": "./dist/torus.js",
+  "types": "./dist/torus.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/anwolosz/torus/issues"
   },
-  "homepage": "https://github.com/anwolosz/torus#readme"
+  "homepage": "https://github.com/anwolosz/torus#readme",
+  "devDependencies": {
+    "vitest": "^0.29.2"
+  }
 }

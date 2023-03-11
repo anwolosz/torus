@@ -48,7 +48,7 @@ export class Torus {
 
     private validateDimensionSize(size: number) {
         if (size <= 1) {
-            throw RangeError(`Dimension size must be larger than 1`);
+            throw TypeError(`Dimension size must be larger than 1`);
         }
     }
 
